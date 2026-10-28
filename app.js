@@ -11,8 +11,9 @@ const CONFIG = {
 // ================================================
 
 const vietqrImage = document.querySelector("#vietqr-image");
-vietqrImage.src = `https://img.vietqr.io/image/${CONFIG.bank.id}-${CONFIG.bank.account}-compact2.png?accountName=${encodeURIComponent(CONFIG.bank.name)}&addInfo=${encodeURIComponent("QUA MIT ung ho")}`;
-document.querySelector("#bank-caption").textContent = `${CONFIG.bank.id} · ${CONFIG.bank.account} · ${CONFIG.bank.name}`;
+vietqrImage.src = `https://img.vietqr.io/image/${CONFIG.bank.id}-${CONFIG.bank.account}-qr_only.png?accountName=${encodeURIComponent(CONFIG.bank.name)}&addInfo=${encodeURIComponent("QUA MIT ung ho")}`;
+document.querySelector("#bank-account").textContent = CONFIG.bank.account;
+document.querySelector("#bank-caption").textContent = `${CONFIG.bank.id} · ${CONFIG.bank.name}`;
 document.querySelector("#momo-number").textContent = CONFIG.momo;
 document.querySelector("#contact-email").href = `mailto:${CONFIG.email}?subject=${encodeURIComponent("Liên hệ từ trang Quả Mít")}`;
 
