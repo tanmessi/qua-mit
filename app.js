@@ -16,43 +16,6 @@ document.querySelector("#bank-caption").textContent = `${CONFIG.bank.id} · ${CO
 document.querySelector("#momo-number").textContent = CONFIG.momo;
 document.querySelector("#contact-email").href = `mailto:${CONFIG.email}?subject=${encodeURIComponent("Liên hệ từ trang Quả Mít")}`;
 
-const themeButton = document.querySelector("#theme-toggle");
-const storedTheme = localStorage.getItem("ai-journal-theme");
-
-if (storedTheme === "light") document.body.classList.add("light");
-
-themeButton.addEventListener("click", () => {
-  document.body.classList.toggle("light");
-  localStorage.setItem("ai-journal-theme", document.body.classList.contains("light") ? "light" : "dark");
-});
-
-const fortunes = [
-  "Một việc hoàn thành đáng giá hơn ba việc còn dang dở.",
-  "Đừng đo tốc độ của mình bằng hành trình của người khác.",
-  "Một câu hỏi đúng có thể tiết kiệm cả buổi chiều.",
-  "Làm bản thử nhỏ trước khi đặt cược lớn.",
-  "Hôm nay tiến một bước cũng là tiến về phía trước."
-];
-const fortuneButton = document.querySelector("#fortune-button");
-const fortuneResult = document.querySelector("#fortune-result p");
-const fortuneKey = `ai-journal-fortune-${new Date().toISOString().slice(0, 10)}`;
-const savedFortune = localStorage.getItem(fortuneKey);
-
-if (savedFortune) fortuneResult.textContent = savedFortune;
-
-fortuneButton.addEventListener("click", () => {
-  const fortune = fortunes[Math.floor(Math.random() * fortunes.length)];
-  fortuneResult.textContent = fortune;
-  localStorage.setItem(fortuneKey, fortune);
-  fortuneButton.disabled = true;
-  fortuneButton.innerHTML = "Đã rút quẻ <span aria-hidden=\"true\">✓</span>";
-});
-
-if (savedFortune) {
-  fortuneButton.disabled = true;
-  fortuneButton.innerHTML = "Đã rút quẻ <span aria-hidden=\"true\">✓</span>";
-}
-
 document.querySelector("#order-form").addEventListener("submit", (event) => {
   event.preventDefault();
   const form = event.currentTarget;
@@ -62,24 +25,20 @@ document.querySelector("#order-form").addEventListener("submit", (event) => {
   document.querySelector("#form-message").textContent = `Cảm ơn ${data.get("name")}! Trình email vừa mở — bấm gửi để hoàn tất.`;
 });
 
-const chatPanel = document.querySelector("#chat-panel");
-document.querySelector("#chat-launch").addEventListener("click", () => {
-  chatPanel.hidden = !chatPanel.hidden;
-  if (!chatPanel.hidden) document.querySelector("#chat-input").focus();
-});
-document.querySelector("#chat-close").addEventListener("click", () => {
-  chatPanel.hidden = true;
-});
-document.querySelector("#chat-form").addEventListener("submit", (event) => {
-  event.preventDefault();
-  const input = document.querySelector("#chat-input");
-  const message = document.createElement("p");
-  message.className = "chat-bubble outgoing";
-  message.textContent = input.value.trim();
-  document.querySelector("#chat-messages").append(message);
-  input.value = "";
-  const reply = document.createElement("p");
-  reply.className = "chat-bubble";
-  reply.textContent = "Mình đã nhận tin nhắn trong bản demo này.";
-  document.querySelector("#chat-messages").append(reply);
+document.querySelectorAll("[data-copy]").forEach((button) => {
+  button.addEventListener("click", async () => {
+    const value = button.dataset.copy === "bank" ? CONFIG.bank.account : CONFIG.momo;
+
+    try {
+      await navigator.clipboard.writeText(value);
+      button.innerHTML = 'Đã sao chép <span aria-hidden="true">✓</span>';
+      window.setTimeout(() => {
+        button.innerHTML = button.dataset.copy === "bank"
+          ? 'Sao chép số tài khoản <span aria-hidden="true">▣</span>'
+          : 'Sao chép số MoMo <span aria-hidden="true">▣</span>';
+      }, 1800);
+    } catch {
+      button.textContent = "Không thể sao chép trên trình duyệt này";
+    }
+  });
 });
