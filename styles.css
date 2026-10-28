@@ -48,6 +48,19 @@ h1, h2, h3, p { margin-top: 0; }
 .intro-monogram span { color: var(--surface); font-family: var(--serif); font-weight: 400; }
 .intro-note-bottom { display: flex; justify-content: space-between; gap: 12px; padding-top: 12px; border-top: 1px solid rgb(32 35 31 / 30%); }
 .intro-meta { display: none; }
+.profile-band { margin-top: 20px; background: var(--blue); color: var(--surface); }
+.profile { display: grid; grid-template-columns: .78fr 1.22fr; gap: 72px; align-items: center; padding-block: 48px; }
+.profile .eyebrow { margin-bottom: 12px; color: var(--lime); }
+.profile-name { margin-bottom: 8px; color: var(--coral); font-size: 11px; font-weight: 800; }
+.profile-heading h2 { margin: 0; font-size: 46px; line-height: 1.02; font-weight: 800; }
+.profile-role { margin: 14px 0 0; color: rgb(255 253 248 / 78%); font-size: 12px; }
+.profile-copy > p { max-width: 620px; margin: 0 0 12px; color: rgb(255 253 248 / 86%); font-size: 14px; line-height: 1.7; }
+.profile-expertise { display: grid; grid-template-columns: 1fr 1fr; gap: 0 20px; margin: 20px 0; border-top: 1px solid rgb(255 253 248 / 28%); }
+.profile-expertise span { padding: 9px 0; border-bottom: 1px solid rgb(255 253 248 / 28%); color: var(--surface); font-size: 12px; font-weight: 600; }
+.profile-projects { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 8px 18px; margin-bottom: 16px; }
+.profile-projects span { color: var(--lime); font-size: 10px; font-weight: 800; }
+.profile-projects strong { color: var(--surface); font-size: 12px; }
+.profile-link { color: var(--surface); font-size: 12px; font-weight: 800; text-decoration: underline; text-underline-offset: 4px; }
 .workbench { padding: 28px; border: 1px solid var(--line); background: var(--surface); }
 .workbench-top, .section-heading, .feed-heading { display: flex; justify-content: space-between; align-items: end; gap: 20px; }
 .workbench-top { align-items: center; margin-bottom: 22px; }
@@ -190,6 +203,9 @@ h1, h2, h3, p { margin-top: 0; }
   .intro { grid-template-columns: 1fr; gap: 30px; padding-top: 60px; }
   .intro h1 { font-size: 42px; }
   .intro-copy { font-size: 14px; }
+  .profile { grid-template-columns: 1fr; gap: 26px; padding-block: 34px; }
+  .profile-heading h2 { font-size: 38px; }
+  .profile-copy > p { font-size: 14px; }
   .intro-meta { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
   .intro-meta a { grid-column: 1 / -1; margin: 0; }
   .workbench { padding: 16px; }
