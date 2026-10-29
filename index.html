@@ -62,11 +62,52 @@
         <div class="service-list">
           <article class="service-item"><span class="service-no">01</span><div><h3>Landing page</h3><p>Thiết kế trang giới thiệu cho cửa hàng, sản phẩm hoặc chiến dịch.</p></div><div class="price"><strong>Báo giá</strong><span>theo yêu cầu</span></div><span class="service-arrow" aria-hidden="true">↗</span></article>
           <article class="service-item"><span class="service-no">02</span><div><h3>Mẫu thiết kế Canva</h3><p>Mẫu số có thể tùy chỉnh cho nội dung và hoạt động bán hàng.</p></div><div class="price"><strong>Báo giá</strong><span>theo bộ mẫu</span></div><span class="service-arrow" aria-hidden="true">↗</span></article>
-          <article class="service-item"><span class="service-no">03</span><div><h3>Gói công cụ AI</h3><p>Gemini Pro, Muse AI; tư vấn đăng ký qua kênh chính thức, không bán tài khoản chia sẻ.</p></div><div class="price"><strong>Báo giá</strong><span>theo gói</span></div><span class="service-arrow" aria-hidden="true">↗</span></article>
+          <article class="service-item"><span class="service-no">03</span><div><h3>Muse AI</h3><p>Tư vấn gói phù hợp theo nhu cầu sử dụng.</p></div><div class="price"><strong>Báo giá</strong><span>theo gói</span></div><span class="service-arrow" aria-hidden="true">↗</span></article>
           <a class="service-item service-link" href="https://digishop.vnpt.vn/landing/tanpham" target="_blank" rel="noopener noreferrer" aria-label="Xem dịch vụ VNPT và VinaPhone trên DigiShop">
             <span class="service-no">04</span><div><h3>Dịch vụ VNPT · VinaPhone</h3><p>SIM số, Internet và các gói cước di động VinaPhone.</p></div><div class="price"><strong>Mở DigiShop</strong><span>VNPT · VinaPhone</span></div><span class="service-arrow" aria-hidden="true">↗</span>
           </a>
         </div>
+        <section class="ai-products" aria-labelledby="ai-products-title">
+          <div class="ai-products-heading"><div><p class="eyebrow">GÓI CÔNG CỤ AI</p><h3 id="ai-products-title">Chọn gói phù hợp</h3></div><p>Thông tin kích hoạt và điều kiện sử dụng được hiển thị trước khi thanh toán.</p></div>
+          <div class="ai-product-grid">
+            <article class="ai-product-card ai-product-featured">
+              <div><p class="ai-product-label">GMAIL CÁ NHÂN · 18 THÁNG</p><h4>Google AI Pro</h4><p>Không cần gửi mật khẩu. Sử dụng mọi tính năng của Google AI Pro.</p></div>
+              <div class="ai-product-buy"><strong>600.000đ</strong><span>trọn gói · 18 tháng</span><button class="button button-coral" type="button" data-buy-ai data-product="Google AI Pro" data-price="600000" data-duration="18 tháng">Mua ngay <span aria-hidden="true">↗</span></button></div>
+            </article>
+            <article class="ai-product-card">
+              <div><p class="ai-product-label">TƯ VẤN THEO NHU CẦU</p><h4>Muse AI</h4><p>Gửi nhu cầu để nhận thông tin gói, điều kiện kích hoạt và báo giá.</p></div>
+              <div class="ai-product-buy"><strong>Báo giá</strong><span>theo gói</span><button class="button button-outline" type="button" data-quote-product="Muse AI">Hỏi giá <span aria-hidden="true">↗</span></button></div>
+            </article>
+          </div>
+        </section>
+
+        <dialog class="ai-checkout" id="ai-checkout" aria-labelledby="checkout-title">
+          <div class="ai-checkout-panel">
+            <button class="checkout-close" id="checkout-close" type="button" aria-label="Đóng">×</button>
+            <form id="ai-order-form">
+              <p class="eyebrow">ĐƠN HÀNG · BƯỚC 1/2</p>
+              <h2 id="checkout-title">Xác nhận gói AI</h2>
+              <dl class="checkout-summary">
+                <div><dt>Gói</dt><dd id="checkout-product"></dd></div>
+                <div><dt>Thời hạn</dt><dd id="checkout-duration"></dd></div>
+                <div><dt>Thanh toán</dt><dd id="checkout-price"></dd></div>
+              </dl>
+              <label for="ai-customer-email">Gmail nhận lời mời kích hoạt</label>
+              <input id="ai-customer-email" name="email" type="email" inputmode="email" autocomplete="email" placeholder="tenban@gmail.com" required />
+              <p class="checkout-disclosure">Lời mời được gửi tới Gmail này sau khi bạn thanh toán và Quả Mít xác nhận giao dịch. Tài khoản cần đủ điều kiện sử dụng Google One.</p>
+              <button class="button button-coral checkout-submit" type="submit">Thanh toán <span aria-hidden="true">↗</span></button>
+            </form>
+            <section id="checkout-payment" hidden aria-live="polite">
+              <p class="eyebrow">ĐƠN HÀNG · BƯỚC 2/2</p>
+              <h2>Quét QR để thanh toán</h2>
+              <div class="checkout-payment-details"><strong id="checkout-payment-amount"></strong><span id="checkout-reference"></span></div>
+              <img class="checkout-qr" id="checkout-qr" alt="QR chuyển khoản theo đơn hàng" width="240" height="240" />
+              <p class="checkout-disclosure">Quét bằng ứng dụng ngân hàng. Mã đơn đã được điền trong nội dung chuyển khoản. Website không tự xác nhận tiền vào.</p>
+              <a class="button button-coral checkout-email-link" id="checkout-email-link" href="#">Gửi thông tin đơn cho Quả Mít <span aria-hidden="true">↗</span></a>
+              <p class="checkout-email-note">Bấm gửi email để Quả Mít nhận Gmail kích hoạt; sau đó chuyển khoản và chờ xác nhận thủ công.</p>
+            </section>
+          </div>
+        </dialog>
         <div class="order-layout" id="process">
           <div class="order-copy"><p class="eyebrow">02 — ĐẶT HÀNG</p><h3>Chốt thông tin<br />trước khi mua.</h3><ol><li><span>01</span>Chọn sản phẩm hoặc dịch vụ</li><li><span>02</span>Nhận giá và điều kiện áp dụng</li><li><span>03</span>Xác nhận kênh đăng ký/bàn giao</li><li><span>04</span>Thanh toán theo hướng dẫn</li></ol></div>
           <form class="order-form" id="order-form">
