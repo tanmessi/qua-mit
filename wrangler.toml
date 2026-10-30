@@ -1,0 +1,8 @@
+name = "qua-mit"
+compatibility_date = "2026-10-30"
+pages_build_output_dir = "."
+
+[[d1_databases]]
+binding = "DB"
+database_name = "qua-mit-db"
+database_id = "499d34ba-1ffe-48c7-88f8-f6b3b73c9612"

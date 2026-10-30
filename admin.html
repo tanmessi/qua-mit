@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex, nofollow" />
+    <meta name="theme-color" content="#f4f1e8" />
+    <title>Quản trị · Quả Mít</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="admin.css" />
+    <script src="admin.js" defer></script>
+  </head>
+  <body class="admin-page">
+    <header class="topbar admin-topbar">
+      <a class="wordmark" href="index.html" aria-label="Về Quả Mít"><img src="Logo-qua-mit.png" alt="Quả Mít" /></a>
+      <span class="admin-label">QUẢN TRỊ · QUẢ MÍT</span>
+      <a class="admin-home-link" href="index.html">Về cửa hàng <span aria-hidden="true">↗</span></a>
+    </header>
+
+    <main class="admin-main">
+      <section class="admin-login" id="login-view">
+        <p class="eyebrow">KHU VỰC QUẢN TRỊ</p>
+        <h1>Đăng nhập</h1>
+        <p>Dùng mật khẩu quản trị đã cấu hình trong Cloudflare Pages.</p>
+        <form id="login-form">
+          <label for="admin-password">Mật khẩu</label>
+          <input id="admin-password" name="password" type="password" autocomplete="current-password" required />
+          <button class="button button-coral" type="submit">Vào bảng điều khiển <span aria-hidden="true">↗</span></button>
+          <p class="admin-message" id="login-message" role="status"></p>
+        </form>
+      </section>
+
+      <section class="admin-dashboard" id="dashboard-view" hidden>
+        <div class="admin-heading">
+          <div><p class="eyebrow">TỔNG QUAN</p><h1>Bảng điều khiển</h1></div>
+          <button class="admin-logout" id="logout-button" type="button">Đăng xuất</button>
+        </div>
+        <p class="admin-message" id="dashboard-message" role="status"></p>
+        <div class="admin-stats" id="admin-stats">
+          <article><span>Tổng đơn</span><strong id="stat-orders">—</strong></article>
+          <article><span>Khách hàng</span><strong id="stat-customers">—</strong></article>
+          <article><span>Đã thu</span><strong id="stat-revenue">—</strong></article>
+          <article><span>Chờ thanh toán</span><strong id="stat-pending">—</strong></article>
+        </div>
+
+        <nav class="admin-tabs" aria-label="Quản trị">
+          <button type="button" data-tab="orders" aria-selected="true">Đơn hàng</button>
+          <button type="button" data-tab="products" aria-selected="false">Sản phẩm & giá</button>
+          <button type="button" data-tab="customers" aria-selected="false">Khách hàng</button>
+        </nav>
+
+        <section class="admin-panel" id="panel-orders" data-panel="orders">
+          <div class="panel-heading"><div><p class="eyebrow">ĐƠN HÀNG</p><h2>Theo dõi xử lý</h2></div><button class="quiet-button" type="button" data-refresh>Làm mới</button></div>
+          <div class="table-scroll"><table><thead><tr><th>Mã đơn</th><th>Khách</th><th>Gói / yêu cầu</th><th>Tiền</th><th>Trạng thái</th><th>Ghi chú quản trị</th><th></th></tr></thead><tbody id="orders-body"></tbody></table></div>
+          <p class="table-empty" id="orders-empty" hidden>Chưa có đơn hàng.</p>
+        </section>
+
+        <section class="admin-panel" id="panel-products" data-panel="products" hidden>
+          <div class="panel-heading"><div><p class="eyebrow">DANH MỤC</p><h2>Sản phẩm và giá</h2></div><button class="quiet-button" type="button" data-refresh>Làm mới</button></div>
+          <div class="table-scroll"><table><thead><tr><th>Mã</th><th>Tên</th><th>Danh mục</th><th>Giá (đ)</th><th>Thời hạn</th><th>Gmail bắt buộc</th><th>Mô tả</th><th>Hiện bán</th><th></th></tr></thead><tbody id="products-body"></tbody></table></div>
+          <form class="product-create" id="product-create-form">
+            <h3>Thêm sản phẩm</h3>
+            <div class="product-create-grid">
+              <label>Mã sản phẩm<input name="id" placeholder="vd: muse-ai-pro" required /></label>
+              <label>Tên sản phẩm<input name="name" required /></label>
+              <label>Danh mục<select name="category"><option value="ai">AI</option><option value="digital">Sản phẩm số</option><option value="service">Dịch vụ</option></select></label>
+              <label>Giá (đ)<input name="price" type="number" min="0" step="1000" placeholder="Để trống nếu báo giá" /></label>
+              <label>Thời hạn<input name="duration" placeholder="vd: 1 tháng" /></label>
+              <label class="checkbox-label"><input name="requiresGmail" type="checkbox" /> Cần Gmail</label>
+              <label>Mô tả<input name="description" /></label>
+            </div>
+            <button class="button button-coral" type="submit">Thêm vào danh mục <span aria-hidden="true">+</span></button>
+          </form>
+        </section>
+
+        <section class="admin-panel" id="panel-customers" data-panel="customers" hidden>
+          <div class="panel-heading"><div><p class="eyebrow">KHÁCH HÀNG</p><h2>Lịch sử mua và liên hệ</h2></div><button class="quiet-button" type="button" data-refresh>Làm mới</button></div>
+          <div class="table-scroll"><table><thead><tr><th>Khách hàng</th><th>Gmail kích hoạt</th><th>Liên hệ</th><th>Số đơn</th><th>Đã thanh toán</th><th>Đơn gần nhất</th></tr></thead><tbody id="customers-body"></tbody></table></div>
+          <p class="table-empty" id="customers-empty" hidden>Chưa có khách hàng.</p>
+        </section>
+        <p class="admin-footnote">Trạng thái thanh toán được cập nhật thủ công sau khi đối chiếu giao dịch ngân hàng.</p>
+      </section>
+    </main>
+  </body>
+</html>

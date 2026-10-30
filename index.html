@@ -69,14 +69,14 @@
         </div>
         <section class="ai-products" aria-labelledby="ai-products-title">
           <div class="ai-products-heading"><div><p class="eyebrow">GÓI CÔNG CỤ AI</p><h3 id="ai-products-title">Chọn gói phù hợp</h3></div><p>Thông tin kích hoạt và điều kiện sử dụng được hiển thị trước khi thanh toán.</p></div>
-          <div class="ai-product-grid">
-            <article class="ai-product-card ai-product-featured">
-              <div><p class="ai-product-label">GMAIL CÁ NHÂN · 18 THÁNG</p><h4>Google AI Pro</h4><p>Không cần gửi mật khẩu. Sử dụng mọi tính năng của Google AI Pro.</p></div>
-              <div class="ai-product-buy"><strong>600.000đ</strong><span>trọn gói · 18 tháng</span><button class="button button-coral" type="button" data-buy-ai data-product="Google AI Pro" data-price="600000" data-duration="18 tháng">Mua ngay <span aria-hidden="true">↗</span></button></div>
+          <div class="ai-product-grid" id="ai-product-grid">
+            <article class="ai-product-card ai-product-featured" data-product-id="google-ai-pro-18m">
+              <div><p class="ai-product-label">GMAIL CÁ NHÂN · 18 THÁNG</p><h4>Google AI Pro</h4><p>Kích hoạt bằng lời mời vào nhóm Google One; một số quyền lợi và hạn mức có thể dùng chung.</p></div>
+              <div class="ai-product-buy"><strong>600.000đ</strong><span>trọn gói · 18 tháng</span><button class="button button-coral" type="button" data-buy-ai data-product-id="google-ai-pro-18m" data-product="Google AI Pro" data-price="600000" data-duration="18 tháng" data-requires-gmail="true">Mua ngay <span aria-hidden="true">↗</span></button></div>
             </article>
-            <article class="ai-product-card">
+            <article class="ai-product-card" data-product-id="muse-ai">
               <div><p class="ai-product-label">TƯ VẤN THEO NHU CẦU</p><h4>Muse AI</h4><p>Gửi nhu cầu để nhận thông tin gói, điều kiện kích hoạt và báo giá.</p></div>
-              <div class="ai-product-buy"><strong>Báo giá</strong><span>theo gói</span><button class="button button-outline" type="button" data-quote-product="Muse AI">Hỏi giá <span aria-hidden="true">↗</span></button></div>
+              <div class="ai-product-buy"><strong>Báo giá</strong><span>theo gói</span><button class="button button-outline" type="button" data-quote-product="Muse AI" data-product-id="muse-ai">Hỏi giá <span aria-hidden="true">↗</span></button></div>
             </article>
           </div>
         </section>
@@ -92,9 +92,11 @@
                 <div><dt>Thời hạn</dt><dd id="checkout-duration"></dd></div>
                 <div><dt>Thanh toán</dt><dd id="checkout-price"></dd></div>
               </dl>
-              <label for="ai-customer-email">Gmail nhận lời mời kích hoạt</label>
+              <label id="ai-email-label" for="ai-customer-email">Gmail nhận lời mời kích hoạt</label>
               <input id="ai-customer-email" name="email" type="email" inputmode="email" autocomplete="email" placeholder="tenban@gmail.com" required />
               <p class="checkout-disclosure">Lời mời được gửi tới Gmail này sau khi bạn thanh toán và Quả Mít xác nhận giao dịch. Tài khoản cần đủ điều kiện sử dụng Google One.</p>
+              <label class="consent-check"><input name="consent" type="checkbox" required /> Tôi đồng ý để Quả Mít lưu Gmail này nhằm xử lý đơn, kích hoạt và hỗ trợ sau mua.</label>
+                            <p class="checkout-error" id="checkout-error" role="alert" hidden></p>
               <button class="button button-coral checkout-submit" type="submit">Thanh toán <span aria-hidden="true">↗</span></button>
             </form>
             <section id="checkout-payment" hidden aria-live="polite">
@@ -114,6 +116,8 @@
             <label for="order-name">Tên của bạn</label><input id="order-name" name="name" autocomplete="name" placeholder="Tên hoặc tên cửa hàng" required />
             <label for="order-contact">Email hoặc số điện thoại</label><input id="order-contact" name="contact" autocomplete="email" placeholder="Để mình phản hồi" required />
             <label for="order-brief">Bạn muốn mua hoặc sử dụng gì?</label><textarea id="order-brief" name="brief" rows="3" placeholder="Landing page, mẫu Canva, gói AI, SIM/Internet hoặc VinaPhone..." required></textarea>
+            <label class="consent-check"><input name="consent" type="checkbox" required /> Tôi đồng ý để Quả Mít lưu thông tin liên hệ và yêu cầu nhằm xử lý đơn.</label>
+                        <input id="order-product-id" name="productId" type="hidden" />
             <button class="button button-coral" type="submit">Gửi yêu cầu <span aria-hidden="true">↗</span></button>
             <p class="form-hint" id="form-message" aria-live="polite">Bấm gửi sẽ mở email soạn sẵn tới Quả Mít — không thu thập dữ liệu trên máy chủ.</p>
           </form>
