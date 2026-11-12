@@ -1,3 +1,4 @@
+import { accessPath, hashToken, newDownloadToken } from "../_shared/ebook.js";
 import { error, json, newId, readJson, sameOrigin, text } from "../_shared/http.js";
 
 const gmailPattern = /^[a-z0-9._%+-]+@gmail\.com$/i;
@@ -45,6 +46,29 @@ export async function onRequestPost({ request, env }) {
     ).bind(orderId, activationEmail, activationEmail, product.id, product.name, product.duration || "", product.price_vnd, transferNote, now, now, now).run();
 
     return json({ orderId, productName: product.name, duration: product.duration, amount: product.price_vnd, transferNote, qrUrl, fulfillmentNote: product.fulfillment_note }, 201);
+  }
+
+  if (body.type === "ebook") {
+    if (body.consent !== true) return error("Vui lòng đồng ý lưu thông tin để xử lý đơn.");
+    const productId = text(body.productId, 80);
+    const email = text(body.email, 254).toLowerCase();
+    if (!emailPattern.test(email)) return error("Vui lòng nhập địa chỉ email hợp lệ.");
+    const product = await env.DB.prepare(
+      "SELECT id, name, duration, price_vnd FROM products WHERE id = ? AND category = 'digital' AND active = 1 AND file_size > 0"
+    ).bind(productId).first();
+    if (!product || !Number.isInteger(product.price_vnd) || product.price_vnd <= 0) return error("Ebook này chưa sẵn sàng để thanh toán.", 409);
+
+    const orderId = newId("QM");
+    const transferNote = `QMIT ${orderId}`;
+    const qrUrl = paymentQr(env, product.price_vnd, transferNote);
+    if (!qrUrl) return error("Thông tin tài khoản nhận tiền chưa được cấu hình đúng.", 503);
+    const token = newDownloadToken();
+
+    await env.DB.prepare(
+      "INSERT INTO orders (id, order_type, customer_name, contact, activation_email, product_id, product_name, duration, amount_vnd, transfer_note, consented_at, status, download_token_hash, created_at, updated_at) VALUES (?, 'digital', '', ?, ?, ?, ?, ?, ?, ?, ?, 'awaiting_payment', ?, ?, ?)"
+    ).bind(orderId, email, email, product.id, product.name, product.duration || "", product.price_vnd, transferNote, now, await hashToken(token), now, now).run();
+
+    return json({ orderId, productName: product.name, duration: product.duration, amount: product.price_vnd, transferNote, qrUrl, accessUrl: accessPath(orderId, token) }, 201);
   }
 
   if (body.type === "service") {

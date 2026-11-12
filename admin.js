@@ -79,7 +79,9 @@ async function loadOrders() {
     row.append(element("td", order.id));
     const customerCell = document.createElement("td");
     customerCell.append(element("strong", customer || "—"), element("small", order.activation_email || order.contact || ""));
-    row.append(customerCell, element("td", request || "—"), element("td", order.amount_vnd ? money(order.amount_vnd) : "Báo giá"));
+    const requestCell = element("td", request || "—");
+    if (order.order_type === "digital") requestCell.append(element("small", `Ebook · đã tải ${order.download_count || 0} lần${order.last_download_at ? ` · lần cuối ${date(order.last_download_at)}` : ""}`));
+    row.append(customerCell, requestCell, element("td", order.amount_vnd ? money(order.amount_vnd) : "Báo giá"));
 
     const statusCell = document.createElement("td");
     const status = makeSelect(order.status, options);
@@ -109,6 +111,26 @@ async function loadOrders() {
       }
     });
     actionCell.append(save);
+    if (order.order_type === "digital") {
+      const link = element("button", "Cấp link tải", "row-save");
+      link.type = "button";
+      link.title = "Tạo link tải mới cho khách (link cũ sẽ hết hiệu lực, lượt tải được đặt lại).";
+      link.addEventListener("click", async () => {
+        if (!confirm(`Tạo link tải mới cho đơn ${order.id}? Link cũ của khách sẽ không dùng được nữa.`)) return;
+        link.disabled = true;
+        try {
+          const { url } = await api(`/api/admin/orders/${encodeURIComponent(order.id)}/download-link`, { method: "POST", body: "{}" });
+          await navigator.clipboard.writeText(url).catch(() => {});
+          prompt(`Link tải mới cho đơn ${order.id} (đã sao chép nếu trình duyệt cho phép). Gửi link này cho khách:`, url);
+          dashboardMessage.textContent = `Đã tạo link tải mới cho đơn ${order.id}.`;
+        } catch (error) {
+          dashboardMessage.textContent = error.message;
+        } finally {
+          link.disabled = false;
+        }
+      });
+      actionCell.append(link);
+    }
     row.append(actionCell);
     body.append(row);
   }
@@ -157,6 +179,36 @@ async function loadProducts() {
     description.value = product.description || "";
     descriptionCell.append(description);
     row.append(descriptionCell);
+    const fileCell = document.createElement("td");
+    if (product.category === "digital") {
+      fileCell.append(element("small", product.file_size ? `${product.file_name} · ${(product.file_size / 1024 / 1024).toFixed(2)} MB` : "Chưa có file"));
+      const fileInput = document.createElement("input");
+      fileInput.type = "file";
+      fileInput.accept = "application/pdf,.pdf";
+      fileInput.addEventListener("change", async () => {
+        const file = fileInput.files[0];
+        if (!file) return;
+        fileInput.disabled = true;
+        dashboardMessage.textContent = `Đang tải ${file.name} lên…`;
+        try {
+          await api(`/api/admin/products/${encodeURIComponent(product.id)}/file`, {
+            method: "PUT",
+            headers: { "Content-Type": "application/pdf", "X-File-Name": encodeURIComponent(file.name) },
+            body: file
+          });
+          dashboardMessage.textContent = `Đã tải file cho ${product.name}.`;
+          await loadProducts();
+        } catch (error) {
+          dashboardMessage.textContent = error.message;
+        } finally {
+          fileInput.disabled = false;
+        }
+      });
+      fileCell.append(fileInput);
+    } else {
+      fileCell.textContent = "—";
+    }
+    row.append(fileCell);
     const activeCell = document.createElement("td");
     const active = document.createElement("input");
     active.type = "checkbox";

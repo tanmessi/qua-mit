@@ -23,6 +23,26 @@ const aiCustomerEmail = document.querySelector("#ai-customer-email");
 const checkoutPrice = document.querySelector("#checkout-price");
 const checkoutPaymentAmount = document.querySelector("#checkout-payment-amount");
 const aiProductGrid = document.querySelector("#ai-product-grid");
+const ebookSection = document.querySelector("#ebooks");
+const ebookProductGrid = document.querySelector("#ebook-product-grid");
+
+const CHECKOUT_TEXT = {
+  ai: {
+    title: "Xác nhận gói AI",
+    durationLabel: "Thời hạn",
+    disclosure: "Lời mời được gửi tới Gmail này sau khi bạn thanh toán và Quả Mít xác nhận giao dịch. Tài khoản cần đủ điều kiện sử dụng Google One.",
+    consent: "Tôi đồng ý để Quả Mít lưu Gmail này nhằm xử lý đơn, kích hoạt và hỗ trợ sau mua.",
+    emailNote: "Bấm gửi email để Quả Mít nhận Gmail kích hoạt; sau đó chuyển khoản và chờ xác nhận thủ công."
+  },
+  ebook: {
+    title: "Xác nhận mua ebook",
+    durationLabel: "Định dạng",
+    emailLabel: "Email nhận thông tin đơn",
+    disclosure: "Sau khi tạo đơn, bạn nhận một link tải riêng. Nút tải PDF sẽ mở ngay khi Quả Mít xác nhận đã nhận tiền.",
+    consent: "Tôi đồng ý để Quả Mít lưu email này nhằm xử lý đơn và hỗ trợ sau mua.",
+    emailNote: "Không bắt buộc: gửi email để Quả Mít xác nhận nhanh hơn. Hãy lưu link tải ở trên trước khi đóng cửa sổ."
+  }
+};
 
 aiCustomerEmail.addEventListener("input", () => aiCustomerEmail.setCustomValidity(""));
 
@@ -69,12 +89,50 @@ function renderAiProduct(product) {
   return card;
 }
 
+function renderEbookProduct(product) {
+  const card = document.createElement("article");
+  card.className = "ai-product-card";
+  card.dataset.productId = product.id;
+
+  const details = document.createElement("div");
+  const label = document.createElement("p");
+  label.className = "ai-product-label";
+  label.textContent = "EBOOK · PDF";
+  const name = document.createElement("h4");
+  name.textContent = product.name;
+  const description = document.createElement("p");
+  description.textContent = product.description;
+  details.append(label, name, description);
+
+  const purchase = document.createElement("div");
+  purchase.className = "ai-product-buy";
+  const price = document.createElement("strong");
+  price.textContent = `${product.price_vnd.toLocaleString("vi-VN")}đ`;
+  const format = document.createElement("span");
+  format.textContent = product.duration || "Ebook PDF";
+  const button = document.createElement("button");
+  button.type = "button";
+  button.className = "button button-coral";
+  button.dataset.buyEbook = "";
+  button.dataset.productId = product.id;
+  button.dataset.product = product.name;
+  button.dataset.duration = product.duration || "Ebook PDF";
+  button.dataset.price = String(product.price_vnd);
+  button.innerHTML = 'Mua ebook <span aria-hidden="true">↗</span>';
+  purchase.append(price, format, button);
+  card.append(details, purchase);
+  return card;
+}
+
 async function loadAiCatalog() {
   try {
     const response = await fetch("/api/catalog", { headers: { Accept: "application/json" } });
     if (!response.ok) return;
     const data = await response.json();
     if (!Array.isArray(data.products)) return;
+    const ebooks = data.products.filter((product) => product.category === "digital" && product.has_file && Number.isInteger(product.price_vnd) && product.price_vnd > 0);
+    ebookProductGrid.replaceChildren(...ebooks.map(renderEbookProduct));
+    ebookSection.hidden = ebooks.length === 0;
     const aiProducts = data.products.filter((product) => product.category === "ai");
     aiProductGrid.replaceChildren(...aiProducts.map(renderAiProduct));
     if (!aiProducts.length) {
@@ -100,22 +158,48 @@ aiProductGrid.addEventListener("click", (event) => {
     return;
   }
   if (!button.hasAttribute("data-buy-ai")) return;
+  openCheckout("ai", button);
+});
 
+ebookProductGrid.addEventListener("click", (event) => {
+  const button = event.target.closest("button[data-buy-ebook]");
+  if (button) openCheckout("ebook", button);
+});
+
+function openCheckout(kind, button) {
+  const copy = CHECKOUT_TEXT[kind];
   aiOrderForm.reset();
   aiCustomerEmail.setCustomValidity("");
+  aiOrderForm.dataset.kind = kind;
   aiOrderForm.dataset.productId = button.dataset.productId;
-  const requiresGmail = button.dataset.requiresGmail === "true";
+  const requiresGmail = kind === "ai" && button.dataset.requiresGmail === "true";
   aiOrderForm.dataset.requiresGmail = String(requiresGmail);
   aiOrderForm.hidden = false;
   document.querySelector("#checkout-payment").hidden = true;
+  document.querySelector("#checkout-ebook-access").hidden = true;
   document.querySelector("#checkout-error").hidden = true;
   document.querySelector("#checkout-error").textContent = "";
+  document.querySelector("#checkout-title").textContent = copy.title;
+  document.querySelector("#checkout-duration-label").textContent = copy.durationLabel;
+  document.querySelector("#checkout-disclosure").textContent = copy.disclosure;
+  document.querySelector("#checkout-consent-text").textContent = copy.consent;
+  document.querySelector("#checkout-email-note").textContent = copy.emailNote;
   document.querySelector("#checkout-product").textContent = button.dataset.product;
   document.querySelector("#checkout-duration").textContent = button.dataset.duration;
-  document.querySelector("#ai-email-label").textContent = requiresGmail ? "Gmail nhận lời mời kích hoạt" : "Email nhận hướng dẫn kích hoạt";
+  document.querySelector("#ai-email-label").textContent = copy.emailLabel || (requiresGmail ? "Gmail nhận lời mời kích hoạt" : "Email nhận hướng dẫn kích hoạt");
   aiCustomerEmail.placeholder = requiresGmail ? "tenban@gmail.com" : "tenban@example.com";
   checkoutPrice.textContent = `${Number(button.dataset.price).toLocaleString("vi-VN")}đ`;
   aiCheckout.showModal();
+}
+
+document.querySelector("#checkout-ebook-copy").addEventListener("click", async (event) => {
+  const button = event.currentTarget;
+  try {
+    await navigator.clipboard.writeText(document.querySelector("#checkout-ebook-link").href);
+    button.innerHTML = 'Đã sao chép <span aria-hidden="true">✓</span>';
+  } catch {
+    button.textContent = "Hãy sao chép link từ nút Mở trang tải ebook";
+  }
 });
 
 document.querySelector("#checkout-close").addEventListener("click", () => aiCheckout.close());
@@ -139,10 +223,14 @@ aiOrderForm.addEventListener("submit", async (event) => {
   submitButton.disabled = true;
   checkoutError.hidden = true;
   try {
+    const isEbook = aiOrderForm.dataset.kind === "ebook";
+    const consent = new FormData(aiOrderForm).get("consent") === "on";
     const response = await fetch("/api/orders", {
       method: "POST",
       headers: { "Content-Type": "application/json", Accept: "application/json" },
-      body: JSON.stringify({ type: "ai", productId: aiOrderForm.dataset.productId, activationEmail: email, consent: new FormData(aiOrderForm).get("consent") === "on" })
+      body: JSON.stringify(isEbook
+        ? { type: "ebook", productId: aiOrderForm.dataset.productId, email, consent }
+        : { type: "ai", productId: aiOrderForm.dataset.productId, activationEmail: email, consent })
     });
     const order = await response.json();
     if (!response.ok) throw new Error(order.error || "Chưa tạo được đơn hàng. Vui lòng liên hệ Quả Mít.");
@@ -153,7 +241,15 @@ aiOrderForm.addEventListener("submit", async (event) => {
     checkoutPaymentAmount.textContent = `${order.amount.toLocaleString("vi-VN")}đ`;
     document.querySelector("#checkout-reference").textContent = `Mã đơn: ${order.orderId}`;
     document.querySelector("#checkout-qr").src = order.qrUrl;
-    const emailBody = `Mã đơn: ${order.orderId}\nGói: ${order.productName}\nThời hạn: ${order.duration}\nSố tiền: ${order.amount.toLocaleString("vi-VN")}đ\nGmail nhận kích hoạt: ${email}\nNội dung chuyển khoản: ${order.transferNote}`;
+    const accessUrl = order.accessUrl ? new URL(order.accessUrl, location.origin).href : "";
+    if (accessUrl) {
+      document.querySelector("#checkout-ebook-link").href = accessUrl;
+      document.querySelector("#checkout-ebook-copy").innerHTML = 'Sao chép link tải <span aria-hidden="true">▣</span>';
+    }
+    document.querySelector("#checkout-ebook-access").hidden = !accessUrl;
+    const emailBody = isEbook
+      ? `Mã đơn: ${order.orderId}\nEbook: ${order.productName}\nSố tiền: ${order.amount.toLocaleString("vi-VN")}đ\nEmail: ${email}\nNội dung chuyển khoản: ${order.transferNote}`
+      : `Mã đơn: ${order.orderId}\nGói: ${order.productName}\nThời hạn: ${order.duration}\nSố tiền: ${order.amount.toLocaleString("vi-VN")}đ\nGmail nhận kích hoạt: ${email}\nNội dung chuyển khoản: ${order.transferNote}`;
     document.querySelector("#checkout-email-link").href = `mailto:${CONFIG.email}?subject=${encodeURIComponent(`Đơn ${order.orderId} - ${order.productName}`)}&body=${encodeURIComponent(emailBody)}`;
     aiOrderForm.hidden = true;
     document.querySelector("#checkout-payment").hidden = false;

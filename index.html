@@ -17,6 +17,7 @@
       <a class="wordmark" href="#home" aria-label="Về đầu trang"><img src="Logo-qua-mit.png" alt="Quả Mít" /></a>
       <nav class="main-nav" aria-label="Điều hướng chính">
         <a href="#services">Dịch vụ</a>
+        <a href="#ebooks">Ebook</a>
         <a href="#process">Quy trình</a>
         <a href="#payment">Thanh toán</a>
         <a href="#contact">Liên hệ</a>
@@ -81,6 +82,11 @@
           </div>
         </section>
 
+        <section class="ai-products" id="ebooks" aria-labelledby="ebooks-title" hidden>
+          <div class="ai-products-heading"><div><p class="eyebrow">EBOOK · TẢI NGAY SAU THANH TOÁN</p><h3 id="ebooks-title">Ebook thực hành</h3></div><p>Thanh toán qua QR, nhận link riêng. File PDF mở tải ngay khi Quả Mít xác nhận giao dịch.</p></div>
+          <div class="ai-product-grid" id="ebook-product-grid"></div>
+        </section>
+
         <dialog class="ai-checkout" id="ai-checkout" aria-labelledby="checkout-title">
           <div class="ai-checkout-panel">
             <button class="checkout-close" id="checkout-close" type="button" aria-label="Đóng">×</button>
@@ -89,13 +95,13 @@
               <h2 id="checkout-title">Xác nhận gói AI</h2>
               <dl class="checkout-summary">
                 <div><dt>Gói</dt><dd id="checkout-product"></dd></div>
-                <div><dt>Thời hạn</dt><dd id="checkout-duration"></dd></div>
+                <div><dt id="checkout-duration-label">Thời hạn</dt><dd id="checkout-duration"></dd></div>
                 <div><dt>Thanh toán</dt><dd id="checkout-price"></dd></div>
               </dl>
               <label id="ai-email-label" for="ai-customer-email">Gmail nhận lời mời kích hoạt</label>
               <input id="ai-customer-email" name="email" type="email" inputmode="email" autocomplete="email" placeholder="tenban@gmail.com" required />
-              <p class="checkout-disclosure">Lời mời được gửi tới Gmail này sau khi bạn thanh toán và Quả Mít xác nhận giao dịch. Tài khoản cần đủ điều kiện sử dụng Google One.</p>
-              <label class="consent-check"><input name="consent" type="checkbox" required /> Tôi đồng ý để Quả Mít lưu Gmail này nhằm xử lý đơn, kích hoạt và hỗ trợ sau mua.</label>
+              <p class="checkout-disclosure" id="checkout-disclosure">Lời mời được gửi tới Gmail này sau khi bạn thanh toán và Quả Mít xác nhận giao dịch. Tài khoản cần đủ điều kiện sử dụng Google One.</p>
+              <label class="consent-check"><input name="consent" type="checkbox" required /> <span id="checkout-consent-text">Tôi đồng ý để Quả Mít lưu Gmail này nhằm xử lý đơn, kích hoạt và hỗ trợ sau mua.</span></label>
                             <p class="checkout-error" id="checkout-error" role="alert" hidden></p>
               <button class="button button-coral checkout-submit" type="submit">Thanh toán <span aria-hidden="true">↗</span></button>
             </form>
@@ -105,8 +111,13 @@
               <div class="checkout-payment-details"><strong id="checkout-payment-amount"></strong><span id="checkout-reference"></span></div>
               <img class="checkout-qr" id="checkout-qr" alt="QR chuyển khoản theo đơn hàng" width="240" height="240" />
               <p class="checkout-disclosure">Quét bằng ứng dụng ngân hàng. Mã đơn đã được điền trong nội dung chuyển khoản. Website không tự xác nhận tiền vào.</p>
+              <div class="checkout-ebook-access" id="checkout-ebook-access" hidden>
+                <p><strong>Lưu lại link tải ebook của bạn.</strong> Link này là riêng tư, sẽ mở nút tải PDF ngay khi Quả Mít xác nhận thanh toán.</p>
+                <a class="button button-coral" id="checkout-ebook-link" href="#" target="_blank" rel="noopener">Mở trang tải ebook <span aria-hidden="true">↗</span></a>
+                <button class="copy-button" type="button" id="checkout-ebook-copy">Sao chép link tải <span aria-hidden="true">▣</span></button>
+              </div>
               <a class="button button-coral checkout-email-link" id="checkout-email-link" href="#">Gửi thông tin đơn cho Quả Mít <span aria-hidden="true">↗</span></a>
-              <p class="checkout-email-note">Bấm gửi email để Quả Mít nhận Gmail kích hoạt; sau đó chuyển khoản và chờ xác nhận thủ công.</p>
+              <p class="checkout-email-note" id="checkout-email-note">Bấm gửi email để Quả Mít nhận Gmail kích hoạt; sau đó chuyển khoản và chờ xác nhận thủ công.</p>
             </section>
           </div>
         </dialog>
